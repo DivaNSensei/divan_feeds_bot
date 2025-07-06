@@ -1,10 +1,14 @@
 import os, json, requests, praw, html
+from dotenv import load_dotenv
+load_dotenv()
 
 # === Config ===
 SUBREDDIT = "gonewildaudio"
 POST_LIMIT = 50
-NEW_FILE = "reddit/data/reddit_new.json"
-OLD_FILE = "reddit/data/reddit_old.json"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATA_DIR = os.path.join(BASE_DIR, "reddit", "data")
+NEW_FILE = os.path.join(DATA_DIR, "reddit_new.json")
+OLD_FILE = os.path.join(DATA_DIR, "reddit_old.json")
 
 # === Load Secrets ===
 REDDIT_CLIENT_ID = os.getenv("REDDIT_CLIENT_ID")
@@ -42,9 +46,13 @@ def load_json(path):
         return json.load(f)
     return []
 
+
+
 def save_json(path, data):
     with open(path, "w") as f:
         json.dump(data, f, indent=2)
+
+
 
 def send_telegram(post):
     text = (
