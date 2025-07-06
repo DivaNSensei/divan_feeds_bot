@@ -1,12 +1,10 @@
 import os, json, requests, praw, html
-from pathlib import Path
 
 # === Config ===
 SUBREDDIT = "gonewildaudio"
 POST_LIMIT = 50
-DATA_DIR = Path("data")
-NEW_FILE = DATA_DIR / "reddit_new.json"
-OLD_FILE = DATA_DIR / "reddit_old.json"
+NEW_FILE = "reddit/data/reddit_new.json"
+OLD_FILE = "reddit/data/reddit_old.json"
 
 # === Load Secrets ===
 REDDIT_CLIENT_ID = os.getenv("REDDIT_CLIENT_ID")
@@ -40,13 +38,11 @@ def fetch_posts():
 
 
 def load_json(path):
-    if path.exists():
-        with open(path) as f:
-            return json.load(f)
+    with open(path, 'r') as f:
+        return json.load(f)
     return []
 
 def save_json(path, data):
-    DATA_DIR.mkdir(exist_ok=True)
     with open(path, "w") as f:
         json.dump(data, f, indent=2)
 
