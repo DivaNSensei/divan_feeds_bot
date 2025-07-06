@@ -22,10 +22,10 @@ jobs:
       run: pip install -r requirements.txt
 
     - name: Run scraper
-      run: python nhentai/scraper.py
+      run: python nhentai/nhentai_scraper.py
 
     - name: Run bot notification
       env:
         BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
         CHAT_ID: ${{ secrets.CHAT_ID }}
-      run: python nhentai/bot_nhentai.py
+      run: python nhentai/nhentai_bot.py

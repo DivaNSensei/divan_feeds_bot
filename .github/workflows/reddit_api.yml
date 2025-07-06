@@ -1,0 +1,32 @@
+name: Reddit Tracker
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/30 * * * *'  # every 30 minutes
+
+jobs:
+  run-reddit-tracker:
+    runs-on: ubuntu-latest
+
+    env:
+      REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
+      REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
+      REDDIT_USER_AGENT: ${{ secrets.REDDIT_USER_AGENT }}
+      BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+      CHAT_ID: ${{ secrets.CHAT_ID }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Reddit tracker
+        run: python reddit/reddit_bot.py

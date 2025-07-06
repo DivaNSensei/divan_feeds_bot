@@ -67,7 +67,5 @@ for gid in gallery_id: ###
     }
     results.append(result) ###
 
-print(results)
-
 with open("nhentai/data/new.json", "w", encoding="utf-8") as f:
     json.dump(results, f, ensure_ascii=False, indent=2)
