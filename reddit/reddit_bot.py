@@ -51,12 +51,11 @@ def save_json(path, data):
         json.dump(data, f, indent=2)
 
 def send_telegram(post):
-    permalink_url = f"https://reddit.com{post['permalink']}"
     text = (
         f"<b>{html.escape(post['title'])}</b>\n"
         f"👤 by <code>{html.escape(post['author'])}</code>\n"
         f"👍 {post['score']} upvotes\n"
-        f"<code>{html.escape(permalink_url)}</code>"
+        f"<code>{html.escape(post['permalink'])}</code>"
     )
 
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
