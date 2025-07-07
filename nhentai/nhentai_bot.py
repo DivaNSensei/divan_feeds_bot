@@ -14,7 +14,6 @@ with open(os.path.join(DATA_DIR, "old.json"), "r", encoding="utf-8") as f:
     past_data = json.load(f)
 
 past_ids = {entry["id"] for entry in past_data}
-
 new_galleries = [g for g in new_data if g["id"] not in past_ids]
 
 for gallery in reversed(new_galleries):
