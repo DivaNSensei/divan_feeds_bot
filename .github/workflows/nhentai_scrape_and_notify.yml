@@ -37,7 +37,7 @@ jobs:
       run: |
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
         git config --global user.name "GitHub Actions Bot"
-        git add data/past.json
+        git add nhentai/data/past.json
         git diff --cached --quiet || (git commit -m "Update past.json after run" && git push)
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
