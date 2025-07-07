@@ -4,11 +4,13 @@ import os, json, requests
 load_dotenv()
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID") 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATA_DIR = os.path.join(BASE_DIR, "nhentai", "data")
 
-with open("nhentai/data/new.json", "r", encoding="utf-8") as f:
+with open(os.path.join(DATA_DIR, "new.json"), "r", encoding="utf-8") as f:
     new_data = json.load(f)
 
-with open("nhentai/data/old.json", "r", encoding="utf-8") as f:
+with open(os.path.join(DATA_DIR, "old.json"), "r", encoding="utf-8") as f:
     past_data = json.load(f)
 
 past_ids = {entry["id"] for entry in past_data}
@@ -28,5 +30,5 @@ for gallery in reversed(new_galleries):
         }
     )
 
-with open("nhentai/data/old.json", "w", encoding="utf-8") as f:
+with open(os.path.join(DATA_DIR, "old.json"), "w", encoding="utf-8") as f:
     json.dump(new_data, f, ensure_ascii=False, indent=2)

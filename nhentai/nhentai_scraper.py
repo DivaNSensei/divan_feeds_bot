@@ -1,8 +1,10 @@
 from bs4 import BeautifulSoup
-import requests, json
+import requests, json, os
 
 # main page popular titles and links scraping
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATA_DIR = os.path.join(BASE_DIR, "nhentai", "data")
 url = "https://nhentai.net/"
 
 response = requests.get(url)
@@ -67,5 +69,5 @@ for gid in gallery_id: ###
     }
     results.append(result) ###
 
-with open("nhentai/data/new.json", "w", encoding="utf-8") as f:
+with open(os.path.join(DATA_DIR, "new.json"), "w", encoding="utf-8") as f:
     json.dump(results, f, ensure_ascii=False, indent=2)
