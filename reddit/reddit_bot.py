@@ -7,7 +7,6 @@ SUBREDDIT = "gonewildaudio"
 POST_LIMIT = 50
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.join(BASE_DIR, "reddit", "data")
-NEW_FILE = os.path.join(DATA_DIR, "reddit_new.json")
 OLD_FILE = os.path.join(DATA_DIR, "reddit_old.json")
 
 # === Load Secrets ===
@@ -75,7 +74,6 @@ def send_telegram(post):
 def main():
     # Step 1: Fetch current top posts
     new_posts = fetch_posts()
-    save_json(NEW_FILE, new_posts)
 
     # Step 2: Load old posts and find new ones
     old_posts = load_json(OLD_FILE)
