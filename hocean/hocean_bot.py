@@ -89,7 +89,7 @@ CHAT_ID = os.getenv("CHAT_ID")
 def send_telegram_messages(new_h, bot_token, chat_id):
     for h in reversed(new_h):
         text = (
-            f"<b>{html.escape(h['title'])}</b>\n"
+            f"<b>*** {html.escape(h['title'])} ***</b>\n"
             f"Release Date: {h['release_date']}\n"
             f"Upload Date: {h['upload_date']}\n"
             f"Synopsis: <i>{h['synopsis']}</i>\n"
