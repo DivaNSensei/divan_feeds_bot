@@ -49,7 +49,7 @@ def parse_detail_page(url):
     thumb_tag = soup.select_one("section.section div.container div.columns div.column img")
     thumbnail = thumb_tag["src"]
 
-    info_div = soup.select_one("section.section div.container div.columns div.column.is-9 p")
+    info_div = soup.select_one("section.section div.container div.columns div.column.is-9")
     release_date = upload_date = synopsis = "N/A"
 
     if info_div:
