@@ -17,8 +17,7 @@ def fetch_recent_links():
 
     section = soup.select_one("section.section div.container div.fixed-grid div.grid")
     links = [a['href'] for a in section.find_all("a", href=True)]
-    links = list(set(links))  # Remove duplicates, just in case
-    full_links = [f"https://hentaiocean.com{l}" for l in links]
+    full_links = list(set(links))
 
     return full_links
 
