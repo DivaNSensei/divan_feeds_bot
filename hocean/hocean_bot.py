@@ -60,14 +60,19 @@ def parse_detail_page(url):
             elif "Upload date:" in p.text:
                 upload_date = p.text.replace("Upload date:", "").strip()
 
+        hr_tag = info_div.find("hr")
+        if hr_tag:
+            synopsis_parts = []
+            for elem in hr_tag.next_siblings:
+                text = ''
+                if hasattr(elem, 'get_text'):
+                    text = elem.get_text(strip=True)
+                else:
+                    text = str(elem).strip()
+                if text:
+                    synopsis_parts.append(text)
+            synopsis = "\n".join(synopsis_parts).strip()
 
-        full_text = info_div.get_text(separator="\n").strip()
-        used_texts = [p.get_text(strip=True) for p in p_tags]
-        synopsis_lines = [
-            line.strip() for line in full_text.splitlines()
-            if line.strip() and line.strip() not in used_texts
-        ]
-        synopsis = "\n".join(synopsis_lines).strip()
 
     return {
         "url": url,
