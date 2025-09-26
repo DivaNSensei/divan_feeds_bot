@@ -3,3 +3,6 @@ requests
 python-dotenv
 praw
 playwright
+selenium
+cloudscraper
+webdriver-manager
