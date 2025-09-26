@@ -4,6 +4,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
+import requests
 
 load_dotenv()
 
@@ -13,6 +14,8 @@ OLD_PATH = os.path.join(DATA_DIR, "old.json")
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
+
+MAX_CAPTION_LENGTH = 1024  # Telegram caption limit
 
 # ----------------------------
 # Step 1: Use Cloudscraper to fetch the homepage
@@ -49,7 +52,7 @@ for gallery in galleries:
 # Step 2: Selenium headless setup for individual gallery pages
 # ----------------------------
 chrome_options = Options()
-chrome_options.add_argument("--headless=new")  # use the new headless mode
+chrome_options.add_argument("--headless=new")
 chrome_options.add_argument("--disable-blink-features=AutomationControlled")
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-gpu")
@@ -63,7 +66,7 @@ results = []
 for gid in gallery_ids:
     url = f"https://nhentai.net/g/{gid}/"
     driver.get(url)
-    time.sleep(random.uniform(1, 2))  # give JS time to render
+    time.sleep(random.uniform(1, 2))
 
     page_source = driver.page_source
     soup = BeautifulSoup(page_source, "html.parser")
@@ -112,7 +115,6 @@ with open(OLD_PATH, "r", encoding="utf-8") as f:
 past_ids = {entry["id"] for entry in past_data}
 new_galleries = [g for g in results if g["id"] not in past_ids]
 
-import requests
 for gallery in reversed(new_galleries):
     caption = (
         f"🆔 ID: {gallery['id']}\n\n"
@@ -120,6 +122,11 @@ for gallery in reversed(new_galleries):
         f"🏷️ Tags: {', '.join(gallery['tags'])}\n\n"
         f"📄 Pages: {gallery['pages']}"
     )
+
+    # Truncate if too long
+    if len(caption) > MAX_CAPTION_LENGTH:
+        caption = caption[:MAX_CAPTION_LENGTH - 3] + "..."
+
     requests.post(
         f"https://api.telegram.org/bot{BOT_TOKEN}/sendPhoto",
         data={
