@@ -3,7 +3,6 @@ import os, json, time, random
 from bs4 import BeautifulSoup
 import requests
 from playwright.sync_api import sync_playwright
-import datetime
 
 load_dotenv()
 
