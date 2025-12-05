@@ -331,8 +331,6 @@ for gallery in reversed(new_galleries):
     caption = (
         f"🆔 ID: {gallery['id']}\n\n"
         f"📛 Title: {gallery['title']}\n\n"
-        f"🏷️ Tags: {', '.join(gallery['tags'])}\n\n"
-        f"📄 Pages: {gallery['pages']}"
     )
 
     # Truncate if too long
