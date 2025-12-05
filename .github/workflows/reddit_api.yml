@@ -3,7 +3,7 @@ name: Reddit Tracker
 on:
   workflow_dispatch:
   schedule:
-    - cron: '*/30 * * * *'  # every 30 minutes
+    - cron: '0 */6 * * *'   # every 6 hours
 
 permissions:
   contents: write
@@ -15,6 +15,8 @@ jobs:
     env:
       REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
       REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
+      REDDIT_USERNAME: ${{ secrets.REDDIT_USERNAME }}
+      REDDIT_PASSWORD: ${{ secrets.REDDIT_PASSWORD }}
       REDDIT_USER_AGENT: ${{ secrets.REDDIT_USER_AGENT }}
       BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
       CHAT_ID: ${{ secrets.CHAT_ID }}

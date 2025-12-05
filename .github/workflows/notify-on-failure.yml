@@ -1,0 +1,71 @@
+name: Notify on workflow failure
+
+on:
+  workflow_run:
+    types: [completed]
+
+permissions:
+  actions: read
+
+jobs:
+  notify:
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify Telegram (smart)
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${TELEGRAM_BOT_TOKEN:-}" ] || [ -z "${TELEGRAM_CHAT_ID:-}" ]; then
+            echo "Telegram secrets not set - skipping notification"
+            exit 0
+          fi
+
+          WORKFLOW_NAME="${{ github.event.workflow_run.name }}"
+          RUN_URL="${{ github.event.workflow_run.html_url }}"
+          BRANCH="${{ github.event.workflow_run.head_branch }}"
+
+          # Download workflow run logs and scan for known 'no new posts' message
+          LOG_ZIP=logs-${RUN_ID}.zip
+          echo "Downloading logs for run ${RUN_ID}..."
+          curl -s -H "Authorization: Bearer ${GITHUB_TOKEN}" -L -o "${LOG_ZIP}" \
+            "https://api.github.com/repos/${REPO}/actions/runs/${RUN_ID}/logs"
+
+          mkdir -p logs-${RUN_ID}
+          unzip -q "${LOG_ZIP}" -d logs-${RUN_ID} || true
+
+          # Define heuristics
+          NO_POSTS_PHRASE="No new posts to send"
+          # common error indicators
+          ERROR_GREP="Traceback\|Exception\|ERROR\|failed\|FAILURE"
+
+          found_no_posts=0
+          found_error=0
+
+          if grep -R --line-number -F "$NO_POSTS_PHRASE" logs-${RUN_ID} >/dev/null 2>&1; then
+            found_no_posts=1
+          fi
+
+          if grep -R -E --line-number "$ERROR_GREP" logs-${RUN_ID} >/dev/null 2>&1; then
+            found_error=1
+          fi
+
+          if [ "$found_no_posts" -eq 1 ] && [ "$found_error" -eq 0 ]; then
+            echo "Run contains only 'no new posts' message and no errors. Skipping Telegram notification."
+            exit 0
+          fi
+
+          MESSAGE="⚠️ Workflow *${WORKFLOW_NAME}* failed in \`${REPO}\` on branch \`${BRANCH}\`.\n${RUN_URL}"
+
+          # send message (use curl). Use --data-urlencode to preserve characters
+          curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -d chat_id="${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "text=${MESSAGE}" \
+            -d parse_mode="Markdown" \
+            -d disable_web_page_preview=true || true

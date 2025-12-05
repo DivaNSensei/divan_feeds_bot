@@ -6,3 +6,5 @@ playwright
 selenium
 cloudscraper
 webdriver-manager
+yt-dlp
+redgifs
